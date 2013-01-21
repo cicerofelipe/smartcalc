@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130118174612) do
+ActiveRecord::Schema.define(:version => 20130121044711) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(:version => 20130118174612) do
   end
 
   create_table "guara_contacts", :force => true do |t|
-    t.integer  "customer_id"
+    t.integer  "person_id"
     t.string   "name",              :limit => 150
     t.integer  "department_id"
     t.string   "business_function"
@@ -98,8 +98,8 @@ ActiveRecord::Schema.define(:version => 20130118174612) do
     t.datetime "updated_at",                       :null => false
   end
 
-  add_index "guara_contacts", ["customer_id"], :name => "index_guara_contacts_on_customer_id"
   add_index "guara_contacts", ["department_id"], :name => "index_guara_contacts_on_department_id"
+  add_index "guara_contacts", ["person_id"], :name => "index_guara_contacts_on_customer_id"
 
   create_table "guara_customer_activities", :force => true do |t|
     t.integer  "customer_pj_id"
@@ -173,34 +173,6 @@ ActiveRecord::Schema.define(:version => 20130118174612) do
     t.datetime "updated_at",     :null => false
   end
 
-  create_table "guara_customers", :force => true do |t|
-    t.string   "name",           :limit => 120,                    :null => false
-    t.string   "doc",            :limit => 14
-    t.string   "doc_rg",         :limit => 22
-    t.string   "name_sec",       :limit => 120
-    t.string   "address",        :limit => 150
-    t.integer  "district_id"
-    t.integer  "city_id"
-    t.integer  "state_id"
-    t.string   "postal",         :limit => 8
-    t.text     "notes"
-    t.date     "birthday"
-    t.string   "phone",          :limit => 35
-    t.string   "social_link",    :limit => 200
-    t.string   "site",           :limit => 200
-    t.boolean  "is_customer",                   :default => false
-    t.integer  "parent_id"
-    t.boolean  "enabled",                       :default => true
-    t.integer  "person_id"
-    t.string   "person_type"
-    t.boolean  "complete"
-    t.float    "annual_revenue"
-    t.integer  "external_key"
-    t.datetime "created_at",                                       :null => false
-    t.datetime "updated_at",                                       :null => false
-    t.string   "other_contacts", :limit => 70
-  end
-
   create_table "guara_districts", :force => true do |t|
     t.string   "name",       :limit => 60
     t.integer  "city_id"
@@ -229,6 +201,64 @@ ActiveRecord::Schema.define(:version => 20130118174612) do
   end
 
   add_index "guara_microposts", ["user_id", "created_at"], :name => "index_guara_microposts_on_user_id_and_created_at"
+
+  create_table "guara_order_items", :force => true do |t|
+    t.integer  "order_id"
+    t.integer  "product_id"
+    t.integer  "total"
+    t.float    "value"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "guara_order_items", ["order_id"], :name => "index_guara_order_items_on_order_id"
+  add_index "guara_order_items", ["product_id"], :name => "index_guara_order_items_on_product_id"
+
+  create_table "guara_orders", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "type"
+    t.integer  "state"
+    t.datetime "date_init"
+    t.datetime "date_finish"
+    t.date     "state_date"
+    t.integer  "payment_type"
+    t.datetime "payment_date"
+    t.integer  "payment_state"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "guara_orders", ["state", "type"], :name => "index_guara_orders_on_state_and_type"
+  add_index "guara_orders", ["state"], :name => "index_guara_orders_on_state"
+  add_index "guara_orders", ["type"], :name => "index_guara_orders_on_type"
+
+  create_table "guara_people", :force => true do |t|
+    t.string   "name",           :limit => 120,                    :null => false
+    t.string   "doc",            :limit => 14
+    t.string   "doc_rg",         :limit => 22
+    t.string   "name_sec",       :limit => 120
+    t.string   "address",        :limit => 150
+    t.integer  "district_id"
+    t.integer  "city_id"
+    t.integer  "state_id"
+    t.string   "postal",         :limit => 8
+    t.text     "notes"
+    t.date     "birthday"
+    t.string   "phone",          :limit => 35
+    t.string   "social_link",    :limit => 200
+    t.string   "site",           :limit => 200
+    t.boolean  "is_customer",                   :default => false
+    t.integer  "parent_id"
+    t.boolean  "enabled",                       :default => true
+    t.integer  "person_id"
+    t.string   "person_type"
+    t.boolean  "complete"
+    t.float    "annual_revenue"
+    t.integer  "external_key"
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+    t.string   "other_contacts", :limit => 70
+  end
 
   create_table "guara_product_categories", :force => true do |t|
     t.integer  "product_id"
